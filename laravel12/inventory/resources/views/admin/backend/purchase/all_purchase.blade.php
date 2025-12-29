@@ -44,19 +44,22 @@
                                                 @foreach ($purchases as $key => $purchase)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $purchase->warehouse_id ?? 'N/A' }}</td>
+                                                        <td>{{ $purchase->warehouse->name ?? 'N/A' }}</td>
                                                         <td>{{ $purchase->status }}</td>
                                                         <td>$ {{ $purchase->grand_total }}</td>
                                                         <td>Cash</td>
                                                         <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('Y-m-d') }}</td>
                                                         <td>
-                                                            <a href="{{ route('details.product', $product->id) }}" class="btn btn-info sm" title="Details">
+                                                            <a href="{{ route('details.purchase', $purchase->id) }}" class="btn btn-info sm" title="Details">
                                                                 <span class="mdi mdi-eye-circle mdi-18px"></span>
                                                             </a>
-                                                            <a href="{{ route('edit.product', $product->id) }}" class="btn btn-success sm" title="Edit">
+                                                            <a href="{{ route('invoice.purchase', $purchase->id) }}" class="btn btn-primary sm" title="Details">
+                                                                <span class="mdi mdi-download-circle mdi-18px"></span>
+                                                            </a>
+                                                            <a href="{{ route('edit.purchase', $purchase->id) }}" class="btn btn-success sm" title="Edit">
                                                                 <span class="mdi mdi-book-edit mdi-18px"></span>
                                                             </a>
-                                                            <a href="{{ route('delete.product', $product->id) }}" class="btn btn-danger sm" title="Delete" id="delete">
+                                                            <a href="{{ route('delete.product', $purchase->id) }}" class="btn btn-danger sm" title="Delete" id="delete">
                                                                 <span class="mdi mdi-delete-circle mdi-18px"></span>
                                                             </a>
                                                         </td>

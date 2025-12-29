@@ -8,11 +8,11 @@
             <h3 class="mb-0">Create Purchase</h3>
             <div class="text-end my-2 mt-md-0"><a class="btn btn-outline-primary" href="{{ route('all.purchase') }}">Back</a></div>
          </div>
-         
+
 
  <div class="card">
     <div class="card-body">
-    <form action=" " method="post" enctype="multipart/form-data">
+    <form action="{{ route('store.purchase') }}" method="post" enctype="multipart/form-data">
                   @csrf
 
 
@@ -90,7 +90,7 @@
               </tr>
            </thead>
            <tbody>
-        
+
            </tbody>
         </table>
      </div>
@@ -115,19 +115,19 @@
                       <td class="py-3 text-primary">Grand Total</td>
                       <td class="py-3 text-primary" id="grandTotal">TK 0.00</td>
                       <input type="hidden" name="grand_total">
-                   </tr>      
-                   
-               
+                   </tr>
+
+
                   <tr class="d-none">
                       <td class="py-3">Paid Amount</td>
-                      <td class="py-3" id="paidAmount"> 
+                      <td class="py-3" id="paidAmount">
                       <input type="text" name="paid_amount" placeholder="Enter amount paid" class="form-control">
                       </td>
                    </tr>
                    <!-- new add full paid functionality  -->
                    <tr class="d-none">
                       <td class="py-3">Full Paid</td>
-                      <td class="py-3" id="fullPaid"> 
+                      <td class="py-3" id="fullPaid">
                          <input type="text" name="full_paid" id="fullPaidInput">
                       </td>
                    </tr>
@@ -136,7 +136,7 @@
                       <td class="py-3" id="dueAmount">TK 0.00</td>
                       <input type="hidden" name="due_amount">
                    </tr>
-              
+
 
                 </tbody>
              </table>

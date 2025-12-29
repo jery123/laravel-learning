@@ -98,8 +98,13 @@ Route::middleware('auth')->group(function() {
         Route::controller(PurchaseController::class)->group(function(){
             Route::get('/all/purchase', 'AllPurchase')->name('all.purchase');
             Route::get('/add/purchase', 'AddPurchase')->name('add.purchase');
+            Route::post('/store/purchase', 'StorePurchase')->name('store.purchase');
+            Route::get('/edit/purchase/{id}', 'EditPurchase')->name('edit.purchase');
+            Route::post('/update/purchase/{id}', 'UpdatePurchase')->name('update.purchase');
+            Route::get('/details/purchase/{id}', 'DetailsPurchase')->name('details.purchase');
+            Route::get('/invoice/purchase/{id}', 'InvoicePurchase')->name('invoice.purchase');
             Route::get('/all/purchase/return', 'AllPurchaseReturn')->name('all.purchase.return');
-            Route::get('purchase/product/search', 'PurchaseProductSearch')->name('purchase.product.search');
+            Route::get('/purchase/product/search', 'PurchaseProductSearch')->name('purchase.product.search');
         });
 
 
