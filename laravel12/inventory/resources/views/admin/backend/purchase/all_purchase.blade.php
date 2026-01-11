@@ -59,7 +59,7 @@
                                                             <a href="{{ route('edit.purchase', $purchase->id) }}" class="btn btn-success sm" title="Edit">
                                                                 <span class="mdi mdi-book-edit mdi-18px"></span>
                                                             </a>
-                                                            <a href="{{ route('delete.product', $purchase->id) }}" class="btn btn-danger sm" title="Delete" id="delete">
+                                                            <a href="{{ route('delete.purchase', $purchase->id) }}" class="btn btn-danger sm" title="Delete" id="delete">
                                                                 <span class="mdi mdi-delete-circle mdi-18px"></span>
                                                             </a>
                                                         </td>

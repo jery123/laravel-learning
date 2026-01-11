@@ -55,7 +55,7 @@ class WareHouseController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'required|max:255|unique:ware_houses,name,'.$warehouse_id,
-            'email' => 'nullable|email|unique:ware_houses,email,'.$warehouse_id.'|max:255',
+            'email' => 'nullable|email|max:255',
             'phone' => 'nullable|max:20',
             'city' => 'nullable',
         ]);

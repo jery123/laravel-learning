@@ -174,7 +174,7 @@
                 <td><strong>Shipping Cost:</strong> ${{ number_format($purchase->shipping_cost, 2) }} </td>
             </tr>
             <tr>
-                <td><strong>Grand Total:</strong> $ </td>
+                <td><strong>Grand Total:</strong> ${{ number_format($purchase->grand_total, 2) }} </td>
             </tr>
         </table>
     </div>

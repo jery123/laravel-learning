@@ -214,4 +214,41 @@ class PurchaseController extends Controller
             $pdf->setPaper('A4', 'portrait');
             return $pdf->download('purchase_invoice_'.$purchase->id.'.pdf');
         }
+
+        public function DeletePurchase($id){
+            DB::beginTransaction();
+
+            try{
+                $purchase = Purchase::findOrFail($id);
+
+                // Get purchase items
+                $purchaseItems = PurchaseItem::where('purchase_id', $purchase->id)->get();
+
+                // Loop for purchase items and decrement product qty
+                foreach($purchaseItems as $item){
+                    $product = Product::find($item->product_id);
+                    if($product){
+                        $product->decrement('product_qty', $item->quantity);
+                    }
+                }
+
+                // Delete purchase items
+                PurchaseItem::where('purchase_id', $purchase->id)->delete();
+
+                // Delete purchase
+                $purchase->delete();
+
+                DB::commit();
+
+                $notif = array(
+                    'message' => "Purchase Deleted Successfully",
+                    'alert-type' => 'success'
+                );
+                return redirect()->route('all.purchase')->with($notif);
+
+            }catch(\Exception $e){
+                DB::rollBack();
+                return response()->json(['error'=>$e->getMessage()], 500);
+            }
+        }
 }
