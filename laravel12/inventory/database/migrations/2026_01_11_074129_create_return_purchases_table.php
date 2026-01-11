@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('supplier_id');
             $table->decimal('discount',10, 2)->default(0.00);
             $table->decimal('shipping',10, 2)->default(0.00);
-            $table->enum('status', ['pending', 'received', 'ordered'])->default('pending');
+            $table->enum('status', ['pending', 'returned', 'ordered'])->default('pending');
             $table->text('note')->nullable();
             $table->decimal('grand_total',15, 2)->default(0.00);
             $table->timestamps();

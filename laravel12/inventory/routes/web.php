@@ -5,6 +5,7 @@ use App\Http\Controllers\Backend\BrandController;
 use App\Http\Controllers\Backend\CustomerController;
 use App\Http\Controllers\Backend\ProductController;
 use App\Http\Controllers\Backend\PurchaseController;
+use App\Http\Controllers\Backend\ReturnPurchaseController;
 use App\Http\Controllers\Backend\SupplierController;
 use App\Http\Controllers\Backend\WareHouseController;
 use App\Http\Controllers\ProfileController;
@@ -106,6 +107,19 @@ Route::middleware('auth')->group(function() {
             Route::get('/delete/purchase/{id}', 'DeletePurchase')->name('delete.purchase');
             Route::get('/all/purchase/return', 'AllPurchaseReturn')->name('all.purchase.return');
             Route::get('/purchase/product/search', 'PurchaseProductSearch')->name('purchase.product.search');
+        });
+
+        Route::controller(ReturnPurchaseController::class)->group(function(){
+            Route::get('/all/return/purchase', 'AllReturnPurchase')->name('all.return.purchase');
+            Route::get('/add/return/purchase', 'AddReturnPurchase')->name('add.return.purchase');
+            Route::post('/store/return/purchase', 'StoreReturnPurchase')->name('store.return.purchase');
+            // Route::get('/edit/purchase/{id}', 'EditPurchase')->name('edit.purchase');
+            // Route::post('/update/purchase/{id}', 'UpdatePurchase')->name('update.purchase');
+            // Route::get('/details/purchase/{id}', 'DetailsPurchase')->name('details.purchase');
+            // Route::get('/invoice/purchase/{id}', 'InvoicePurchase')->name('invoice.purchase');
+            // Route::get('/delete/purchase/{id}', 'DeletePurchase')->name('delete.purchase');
+            // Route::get('/all/purchase/return', 'AllPurchaseReturn')->name('all.purchase.return');
+            // Route::get('/purchase/product/search', 'PurchaseProductSearch')->name('purchase.product.search');
         });
 
 
