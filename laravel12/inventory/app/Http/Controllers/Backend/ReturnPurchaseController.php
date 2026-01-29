@@ -91,4 +91,149 @@ class ReturnPurchaseController extends Controller
         }
     }
 
+        public function DetailsReturnPurchase($id){
+            $purchase = ReturnPurchase::with(['supplier','purchaseItems.product'])
+            ->find($id);
+
+            return view('admin.backend.return-purchase.return_purchase_details', compact(
+                'purchase'
+            ));
+        }
+
+
+        public function InvoiceReturnPurchase($id){
+            $purchase = ReturnPurchase::with(['supplier','warehouse' ,'purchaseItems.product'])
+            ->find($id);
+
+            $pdf = Pdf::loadView('admin.backend.return-purchase.invoice_pdf', compact('purchase'));
+            $pdf->setPaper('A4', 'portrait');
+            return $pdf->download('purchase_invoice_'.$purchase->id.'.pdf');
+        }
+
+
+    public function EditReturnPurchase($id) {
+        $purchase = ReturnPurchase::with('purchaseItems.product')->findOrFail($id);
+        $warehouses = WareHouse::all();
+        $suppliers = Supplier::all();
+        return view('admin.backend.return-purchase.edit_return_purchase', compact(
+            'purchase', 'warehouses', 'suppliers'
+        ));
+    }
+
+    public function UpdateReturnPurchase(Request $request, $id){
+        $request->validate([
+            'date' => 'required|date',
+            'status' => "required",
+        ]);
+
+        // dd($request);
+
+            DB::beginTransaction();
+
+            try{
+
+            $purchase = ReturnPurchase::findOrFail($id);
+
+            $purchase->update([
+                'date' => $request->date,
+                'warehouse_id' => $request->warehouse_id,
+                'status' => $request->status,
+                'discount' => $request->discount ?? 0,
+                'note' => $request->note,
+                'supplier_id' => $request->supplier_id,
+                'grand_total' => $request->grand_total,
+                'shipping' => $request->shipping ?? 0,
+            ]);
+
+            // Get old purchase items
+            $oldPurchaseItems = ReturnPurchaseItem::where('return_purchase_id', $purchase->id)->get();
+
+            // Loop for old purchase items and decremnt product qty
+            foreach($oldPurchaseItems as $oldItem){
+                $product = Product::find($oldItem->product_id);
+
+                if($product){
+                    $product->increment('product_qty', $oldItem->quantity);
+                    // Increment old quantity
+                }
+            }
+
+            // Delete old Purchase Items
+            ReturnPurchaseItem::where('return_purchase_id', $purchase->id)->delete();
+
+            // Loop for new products and insert new purchase items
+
+            foreach($request->products as $product_id=>$productData){
+                ReturnPurchaseItem::create([
+                    'return_purchase_id' => $purchase->id,
+                    'product_id' => $product_id,
+                    'net_unit_cost' => $productData['net_unit_cost'],
+                    'stock' => $productData['stock'],
+                    'quantity' => $productData['quantity'],
+                    'discount' => $productData['discount'] ?? 0,
+                    'subtotal' => $productData['subtotal'],
+                ]);
+
+                // Update product stock by increenting the new quantity
+                $product = Product::find($product_id);
+                if($product){
+                    $product->decrement('product_qty', $productData['quantity']);
+                    // Decrement new quantity
+                }
+
+            }
+            DB::commit();
+
+            $notif = array(
+                'message' => "Return Purchase Stored Successfully",
+                'alert-type' => 'success'
+            );
+            return redirect()->route('all.return.purchase')->with($notif);
+
+            }catch(\Throwable $e){
+                DB::rollBack();
+                return response()->json(['error'=>$e->getMessage()], 500);
+            }
+
+
+        }
+
+
+        public function DeleteReturnPurchase($id){
+            DB::beginTransaction();
+
+            try{
+                $purchase = ReturnPurchase::findOrFail($id);
+
+                // Get purchase items
+                $purchaseItems = ReturnPurchaseItem::where('return_purchase_id', $purchase->id)->get();
+
+                // Loop for purchase items and decrement product qty
+                foreach($purchaseItems as $item){
+                    $product = Product::find($item->product_id);
+                    if($product){
+                        $product->increment('product_qty', $item->quantity);
+                    }
+                }
+
+                // Delete purchase items
+                ReturnPurchaseItem::where('return_purchase_id', $purchase->id)->delete();
+
+                // Delete purchase
+                $purchase->delete();
+
+                DB::commit();
+
+                $notif = array(
+                    'message' => "Return Purchase Deleted Successfully",
+                    'alert-type' => 'success'
+                );
+                return redirect()->route('all.return.purchase')->with($notif);
+
+            }catch(\Exception $e){
+                DB::rollBack();
+                return response()->json(['error'=>$e->getMessage()], 500);
+            }
+        }
+
 }
